@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+        "strings"
 
 	"github.com/hashicorp/go-cleanhttp"
 	kerberos "github.com/hashicorp/vault-plugin-auth-kerberos"
@@ -51,6 +52,15 @@ login-kerb \
 	-disable_fast_negotiation
 */
 
+
+func Partition(s string, sep string) (string, string, string) {
+	parts := strings.SplitN(s, sep, 2)
+	if len(parts) == 1 {
+		return parts[0], "", ""
+	}
+	return parts[0], sep, parts[1]
+}
+
 func main() {
 	flag.Parse()
 	if username == "" {
@@ -81,15 +91,17 @@ func main() {
 		}
 	}
 
+        var userWithoutRealm, realmFromUser = Partition(username, "@")
+        var serviceWithoutRealm, realmFromUser = Partition(service, "@")
+
 	loginCfg := &kerberos.LoginCfg{
-		Username:               username,
-		Service:                service,
+		Username:               userWithoutRealm,
+		Service:                serviceWithoutRealm,
 		Realm:                  realm,
 		KeytabPath:             keytabPath,
 		Krb5ConfPath:           krb5ConfPath,
 		DisableFASTNegotiation: disableFASTNegotiation,
 	}
-
 	authHeaderVal, err := kerberos.GetAuthHeaderVal(loginCfg)
 	if err != nil {
 		fmt.Printf("couldn't get auth header: %s", err)

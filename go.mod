@@ -1,4 +1,4 @@
-module github.com/hashicorp/vault-plugin-auth-kerberos
+module github.com/joomcode/vault-plugin-auth-kerberos
 
 go 1.12
 
