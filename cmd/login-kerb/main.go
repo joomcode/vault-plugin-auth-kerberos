@@ -91,8 +91,13 @@ func main() {
 		}
 	}
 
+        fmt.Println(`non-stripped username is  %s`, username)
+        fmt.Println(`non-stripped service is %s`, service)
         var userWithoutRealm, realmFromUser = Partition(username, "@")
         var serviceWithoutRealm, realmFromUser = Partition(service, "@")
+
+        fmt.Println(`stripped username is %s`, userWithoutRealm)
+        fmt.Println(`stripped servicename is %s`, serviceWithoutRealm)
 
 	loginCfg := &kerberos.LoginCfg{
 		Username:               userWithoutRealm,
